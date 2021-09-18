@@ -5,6 +5,8 @@ HOST = socket.gethostbyname(socket.gethostname())
 PORT = 9090
 FORMAT = 'utf-8'
 
+print("\n#  [STATUS] Server starting ... \n")
+
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((HOST, PORT))
 
@@ -44,8 +46,6 @@ def receive():
 		client.send("Connected to the server".encode(FORMAT))
 		thread  = threading.Thread(target=handle, args=(client,))
 		thread.start()
-
-print("\n#  [STATUS] Server starting ... \n")
 
 print("##############################")
 print("#  [STATUS] Server started!  #")
