@@ -1,4 +1,4 @@
-# python-messanger
+# betalk
 A very simple yet very shitty chat app
 
 front end -> flutter (dart)
