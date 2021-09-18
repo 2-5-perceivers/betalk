@@ -21,7 +21,7 @@ def handle(client):
 	while True:
 		try:
 			message = client.recv(1024)
-			print(f"{nicknames[clients.index(client)]} says {message}")
+			print(f"c->  [CLIENT] {nicknames[clients.index(client)]} says {message}")
 			broadcast(message)
 		except:
 			index = clients.index(client)
@@ -32,7 +32,7 @@ def handle(client):
 def receive():
 	while True:
 		client, address = server.accept()
-		print(f"Connected with {str(address)}!")
+		print(f"c->  [CLIENT] Connected with {str(address)}!")
 
 		client.send("__RCV__".encode(FORMAT))
 		nickname = client.recv(1024)
@@ -40,10 +40,17 @@ def receive():
 		clients.append(client)
 
 		print(f"Nickname of the client is {nickname}")
-		broadcast(f"{nickname} joined the chat\n".encode(FORMAT))
+		broadcast(f"c->  [CLIENT] {nickname} joined the chat\n".encode(FORMAT))
 		client.send("Connected to the server".encode(FORMAT))
 		thread  = threading.Thread(target=handle, args=(client,))
 		thread.start()
 
-print("Server running ... ")
+print("\n#  [STATUS] Server starting ... \n")
+
+print("##############################")
+print("#  [STATUS] Server started!  #")
+print("##############################\n")
+
+print("[STATUS] Server running ... \n")
+
 receive()
