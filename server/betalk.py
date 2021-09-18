@@ -12,10 +12,9 @@ args = sys.argv
 
 start_server = args.__contains__("run")
 start_help = args.__contains__("help")
-use_gui = not(args.__contains__("-n") or args.__contains__("--no-gui"))
 
 if start_server:
-    server_instance: Server = Server(use_gui)
+    server_instance: Server = Server()
 
     def on_exit(sig, frame):
         server_instance.dispose()
@@ -29,10 +28,7 @@ elif start_help:
 '''Usage: python betalk.py <command> [arguments]
 Available commands:
 \trun\t\tStart the server
-\thelp\t\tShow help
-
-Global options:
-\t-n, --no-gui\tRuns without a GUI'''
+\thelp\t\tShow help'''
 )
 else:
     print("Select a command")

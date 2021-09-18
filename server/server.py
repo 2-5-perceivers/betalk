@@ -11,11 +11,10 @@ class Server:
 	clients = []
 	nicknames = []
 
-	def __init__(self, gui: bool) -> None:
+	def __init__(self) -> None:
 		self.HOST = socket.gethostbyname(socket.gethostname())
 		self.PORT = 9090
 		self.FORMAT = 'utf-8'
-		pass	
 
 	def startServer(self) -> None:
 		print("[STATUS] Server starting...")
@@ -30,7 +29,7 @@ class Server:
 			client.send(message);
 
 	def handle(self, client) -> None:
-		while True:
+		while not self.shouldClose:
 			try:
 				message = client.recv(1024)
 				print(f"c->  [CLIENT] {self.nicknames[self.clients.index(client)]} says {message}")
@@ -62,5 +61,5 @@ class Server:
 	# Deletes variables
 	def dispose(self) -> None:
 		self.shouldClose = True
-		del self.server
+		self.server.close()
 		sys.exit(0)
