@@ -1,56 +1,61 @@
 import socket
 import threading
 
-HOST = socket.gethostbyname(socket.gethostname())
-PORT = 9090
-FORMAT = 'utf-8'
+class Server:
+	server: socket = None
 
-print("\n#  [STATUS] Server starting ... \n")
+	clients = []
+	nicknames = []
 
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.bind((HOST, PORT))
+	def __init__(self, gui: bool) -> None:
+		self.HOST = socket.gethostbyname(socket.gethostname())
+		self.PORT = 9090
+		self.FORMAT = 'utf-8'
+		pass	
 
-server.listen()
+	def startServer(self) -> None:
+		print("\n#  [STATUS] Server starting ... \n")
+		self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		self.server.bind((self.HOST, self.PORT))
+		self.server.listen()
+		print("##############################")
+		print("#  [STATUS] Server started!  #")
+		print("##############################\n")
+		self.receive()
 
-clients = []
-nicknames = []
+	def broadcast(self, message) -> None:
+		for client in self.clients:
+			client.send(message);
 
-def broadcast(message):
-	for client in clients:
-		client.send(message);
+	def handle(self, client) -> None:
+		while True:
+			try:
+				message = client.recv(1024)
+				print(f"c->  [CLIENT] {self.nicknames[self.clients.index(client)]} says {message}")
+				self.broadcast(message)
+			except:
+				index = self.clients.index(client)
+				self.nicknames.pop(index)
+				self.clients.remove(client)
+				break
 
-def handle(client):
-	while True:
-		try:
-			message = client.recv(1024)
-			print(f"c->  [CLIENT] {nicknames[clients.index(client)]} says {message}")
-			broadcast(message)
-		except:
-			index = clients.index(client)
-			nicknames.pop(index)
-			clients.remove(client)
-			break
+	def receive(self) -> None:
+		print("[STATUS] Server running ... \n")
+		while True:
+			client, address = self.server.accept()
+			print(f"c->  [CLIENT] Connected with {str(address)}!")
 
-def receive():
-	while True:
-		client, address = server.accept()
-		print(f"c->  [CLIENT] Connected with {str(address)}!")
+			client.send("__RCV__".encode(self.FORMAT))
+			nickname = client.recv(1024)
+			self.nicknames.append(nickname)
+			self.clients.append(client)
 
-		client.send("__RCV__".encode(FORMAT))
-		nickname = client.recv(1024)
-		nicknames.append(nickname)
-		clients.append(client)
+			print(f"Nickname of the client is {nickname}")
+			self.broadcast(f"c->  [CLIENT] {nickname} joined the chat\n".encode(self.FORMAT))
+			client.send("Connected to the server".encode(self.FORMAT))
+			thread  = threading.Thread(target=self.handle, args=(client,))
+			thread.start()
 
-		print(f"Nickname of the client is {nickname}")
-		broadcast(f"c->  [CLIENT] {nickname} joined the chat\n".encode(FORMAT))
-		client.send("Connected to the server".encode(FORMAT))
-		thread  = threading.Thread(target=handle, args=(client,))
-		thread.start()
-
-print("##############################")
-print("#  [STATUS] Server started!  #")
-print("##############################\n")
-
-print("[STATUS] Server running ... \n")
-
-receive()
+	# Deletes variables
+	def dispose(self) -> None:
+		del self.server
