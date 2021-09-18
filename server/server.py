@@ -1,6 +1,7 @@
 import socket
 import sys
 import threading
+from utils.bcolors import bcolors
 
 class Server:
 	server: socket = None
@@ -17,13 +18,11 @@ class Server:
 		pass	
 
 	def startServer(self) -> None:
-		print("\n#  [STATUS] Server starting ... \n")
+		print("[STATUS] Server starting...")
 		self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.server.bind((self.HOST, self.PORT))
 		self.server.listen()
-		print("##############################")
-		print("#  [STATUS] Server started!  #")
-		print("##############################\n")
+		print(bcolors.OKGREEN + "[STATUS] Server started!" + bcolors.ENDC)
 		self.receive()
 
 	def broadcast(self, message) -> None:
@@ -43,7 +42,7 @@ class Server:
 				break
 
 	def receive(self) -> None:
-		print("[STATUS] Server running ...")
+		print("[STATUS] Server running ...\n")
 		print("You can close by using Ctrl+C")
 		while not self.shouldClose:
 			client, address = self.server.accept()
