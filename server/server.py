@@ -7,6 +7,7 @@ class Server:
 	server: socket = None
 
 	shouldClose: bool = False
+	server: socket.socket = None
 
 	clients = []
 	nicknames = []
@@ -21,39 +22,42 @@ class Server:
 		self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.server.bind((self.HOST, self.PORT))
 		self.server.listen()
-		print(bcolors.OKGREEN + "[STATUS] Server started!" + bcolors.ENDC)
+		print(bcolors.OKGREEN + f"[STATUS] Server started on {self.HOST}" + bcolors.ENDC)
 		self.receive()
 
 	def broadcast(self, message) -> None:
 		for client in self.clients:
 			client.send(message);
 
-	def handle(self, client) -> None:
+	def handle(self, client: socket.socket) -> None:
+		# TODO: fix bug: when client dies it just keeps broadcasting same message
 		while not self.shouldClose:
 			try:
 				message = client.recv(1024)
-				print(f"c->  [CLIENT] {self.nicknames[self.clients.index(client)]} says {message}")
+				print(f"[CLIENT] {self.nicknames[self.clients.index(client)]} says {message}")
 				self.broadcast(message)
 			except:
 				index = self.clients.index(client)
+				client.close()
 				self.nicknames.pop(index)
 				self.clients.remove(client)
 				break
 
 	def receive(self) -> None:
 		print("[STATUS] Server running ...\n")
-		print("You can close by using Ctrl+C")
+		print("[INFO] You can close by using Ctrl+C\n")
 		while not self.shouldClose:
 			client, address = self.server.accept()
-			print(f"c->  [CLIENT] Connected with {str(address)}!")
 
-			client.send("__RCV__".encode(self.FORMAT))
-			nickname = client.recv(1024)
+			nickname = client.recv(1024).decode(self.FORMAT)
 			self.nicknames.append(nickname)
 			self.clients.append(client)
 
-			print(f"Nickname of the client is {nickname}")
-			self.broadcast(f"c->  [CLIENT] {nickname} joined the chat\n".encode(self.FORMAT))
+			print(f"[CLIENT] Connected with {str(address)}!")
+			print(f"[INFO] Nickname of the client is {nickname}")
+			print(f"[INFO] Total clients: {str(self.clients.__len__())}")
+
+			self.broadcast(f"{nickname} joined the chat\n".encode(self.FORMAT))
 			client.send("Connected to the server".encode(self.FORMAT))
 			thread  = threading.Thread(target=self.handle, args=(client,))
 			thread.start()
