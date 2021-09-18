@@ -1,8 +1,11 @@
 import socket
+import sys
 import threading
 
 class Server:
 	server: socket = None
+
+	shouldClose: bool = False
 
 	clients = []
 	nicknames = []
@@ -40,8 +43,9 @@ class Server:
 				break
 
 	def receive(self) -> None:
-		print("[STATUS] Server running ... \n")
-		while True:
+		print("[STATUS] Server running ...")
+		print("You can close by using Ctrl+C")
+		while not self.shouldClose:
 			client, address = self.server.accept()
 			print(f"c->  [CLIENT] Connected with {str(address)}!")
 
@@ -58,4 +62,6 @@ class Server:
 
 	# Deletes variables
 	def dispose(self) -> None:
+		self.shouldClose = True
 		del self.server
+		sys.exit(0)
