@@ -58,7 +58,6 @@ class Server:
 			print(f"[INFO] Total clients: {str(self.clients.__len__())}")
 
 			self.broadcast(f"{nickname} joined the chat\n".encode(self.FORMAT))
-			client.send("Connected to the server".encode(self.FORMAT))
 			thread  = threading.Thread(target=self.handle, args=(client,))
 			thread.start()
 

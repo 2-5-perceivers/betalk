@@ -11,10 +11,10 @@ Also this README will be updated later
 
 target platforms:
 
-* linux (in process)
-* windows (in process)
-* android (in process)
-* ios (in process)
+* linux - done
+* windows - done
+* android - done
+* ios - done
 * web (not working on right now)
 
 In the near future we will add betalk to snap, aur and maybe to flatpak
