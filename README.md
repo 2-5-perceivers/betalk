@@ -3,9 +3,9 @@ A very simple yet very shitty chat app
 
 front end -> flutter (dart)
 
-back end -> python3
+back end -> python 3, kotlin
 
-This is made for the learning curve so no hate
+This is made for learning, so no hate
 
 Also this README will be updated later
 
