@@ -2,6 +2,7 @@
 
 package com.perceivers25.betalk.classes
 
+import kotlinx.serialization.SerializationException
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.OutputStream
@@ -9,8 +10,7 @@ import java.net.InetAddress
 import java.net.ServerSocket
 import java.net.Socket
 import java.net.SocketException
-import java.nio.charset.Charset
-import java.nio.charset.StandardCharsets
+import java.util.*
 import kotlin.concurrent.thread
 import com.perceivers25.betalk.utils.BetalkLogger as Log
 
@@ -20,7 +20,8 @@ class Server(ip: String? = null) {
 
     private lateinit var server: ServerSocket
 
-    private var clients: MutableList<Socket> = mutableListOf()
+    private var clients: MutableList<Client> = mutableListOf()
+    private var messages: MutableList<Message> = mutableListOf()
 
     fun startServer() {
         Log.logStatus("Server starting...")
@@ -30,74 +31,124 @@ class Server(ip: String? = null) {
 
         while (true) {
             try {
-                val client: Socket = server.accept()
+                val client = Client(server.accept())
                 thread { handleClient(client) }
             } catch (s: SocketException) {
-
+                Log.logError(s.message ?: "Something happened")
             }
         }
     }
 
-    private fun handleClient(client: Socket) {
-        client.receiveBufferSize = 1024
+    private fun handleClient(client: Client) {
+        client.socket.receiveBufferSize = 16384
 
-        val reader = BufferedReader(InputStreamReader(client.getInputStream()))
+        client.reader = BufferedReader(InputStreamReader(client.socket.inputStream))
+        var dp: DataPackage = receive(client.reader)
 
-        val nickname: String = recv(reader)
-
+        if (dp.type == DataPackage.DataPackageType.Login) {
+            client.clientName = dp.loginName!!
+        } else {
+            client.close()
+            return
+        }
         clients.add(client)
+        client.messageQueue.addAll(messages)
 
-        Log.logClient("Connected with ${client.inetAddress.hostAddress}")
-        Log.logClient("Nickname of client is $nickname")
+        Log.logClient("Connected with ${client.socket.inetAddress.hostAddress}")
+        Log.logClient("Nickname of client is ${client.clientName}")
         Log.logInfo("Total clients: ${clients.size}")
 
-        broadcast("$nickname joined the chat\n")
+        broadcast(Message.newSystemMessage("${client.clientName} joined the chat"))
 
-        while (!client.isClosed and client.isConnected) {
+        thread {
+            while (!client.socket.isClosed and client.socket.isConnected) {
+                val m: Message? = client.messageQueue.poll()
+                if (m != null)
+                    send(client.socket.outputStream, DataPackage.newMessageDataPackage(m))
+            }
+        }
+
+        while (!client.socket.isClosed and client.socket.isConnected) {
             try {
-                val m = recv(reader)
-                if (m.isBlank())
+                try {
+                    dp = receive(client.reader)
+                } catch (_: Throwable) {
                     break
-                Log.logClient(m.replace("@", " says: "))
-                broadcast(m)
+                }
+                if (dp.type == DataPackage.DataPackageType.Message) {
+                    var details: String = dp.message!!.messageAuthor!!
+                    if (dp.message!!.messageTextContent != null) {
+                        details += " says: " + dp.message!!.messageTextContent
+                    }
+                    if (dp.message!!.messageFileContent != null) {
+                        if (dp.message!!.messageTextContent != null) {
+                            details += " and"
+                        }
+                        details += " sent a file"
+                    }
+                    Log.logClient(details)
+                }
+                broadcast(dp.message!!)
             } catch (ex: Exception) {
                 break
             }
         }
-        reader.close()
         client.close()
         clients.remove(client)
-        broadcast("$nickname left\n")
-        Log.logClient("${client.inetAddress.hostAddress} closed the connection")
+        broadcast(Message.newSystemMessage("${client.clientName} left"))
+        Log.logClient("${client.socket.inetAddress.hostAddress} closed the connection. Remaining clients: ${clients.size}")
     }
 
-    private fun broadcast(message: String) {
+    private fun broadcast(message: Message) {
+        messages.add(message)
         for (client in clients) {
-            write(client.getOutputStream(), message)
+            client.messageQueue.add(message)
         }
     }
 
-    private fun write(writer: OutputStream, message: String) {
-        writer.write(message.encodeToByteArray())
+    /**
+     * Sends a data package to a client using its OutputStream
+     */
+    private fun send(writer: OutputStream, dataPackage: DataPackage) {
+        writer.write("${dataPackage.toJson()} \u001a".encodeToByteArray())
     }
 
-    private fun recv(reader: BufferedReader): String {
+    /**
+     * Receives a data package.
+     *
+     * @throws SerializationException if value is empty
+     */
+    private fun receive(reader: BufferedReader): DataPackage {
         var response = ""
-        val chars = CharArray(1024)
+        val chars = CharArray(16384)
         try {
-            val input = reader.read(chars, 0, 1024)
+            val input = reader.read(chars, 0, 16384)
             if (input > 0) {
                 response = String(chars, 0, input)
             }
-        } catch (ex: java.lang.Exception) {
+        } catch (_: java.lang.Exception) {
         }
-        return response
+        try {
+            return DataPackage.fromJson(response)
+        } catch (e: SerializationException) {
+            throw e
+        }
     }
 
     fun stop() {
-        for (client in clients)
-            client.close()
+        for (client in clients) client.close()
         server.close()
         Log.logStatus("Server has closed")
     }
+
+    class Client(var socket: Socket) {
+        var clientName: String = ""
+        var messageQueue: LinkedList<Message> = LinkedList<Message>()
+        lateinit var reader: BufferedReader
+        fun close() {
+            socket.close()
+            reader.close()
+        }
+    }
+
 }
