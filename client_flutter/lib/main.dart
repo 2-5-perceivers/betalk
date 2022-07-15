@@ -16,15 +16,17 @@ class betalkApp extends StatelessWidget {
       create: (_) => DataProvider(),
       dispose: (_, DataProvider instance) => instance.dispose(),
       child: MaterialApp(
-        title: 'betalk',
-        themeMode: ThemeMode.system,
+        title: 'Betalk',
+        themeMode: ThemeMode.dark,
         theme: ThemeData(
           brightness: Brightness.light,
-          primarySwatch: Colors.deepPurple,
+          colorSchemeSeed: Colors.deepPurple,
+          useMaterial3: true,
         ),
         darkTheme: ThemeData(
-          colorScheme: ColorScheme.dark(
-              primary: Colors.deepPurple[400]!, secondary: Colors.green[400]!),
+          brightness: Brightness.dark,
+          colorSchemeSeed: Colors.deepPurple[400],
+          useMaterial3: true,
         ),
         debugShowCheckedModeBanner: false,
         home: LoginPage(),

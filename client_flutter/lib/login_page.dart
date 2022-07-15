@@ -14,22 +14,38 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 400),
-            child: Material(
-              borderRadius: BorderRadius.circular(20),
-              elevation: 10,
-              child: Column(
-                children: [buildForm(context)],
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+      appBar: AppBar(
+        title: const Text("Betalk"),
+        centerTitle: true,
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Container(
+                  constraints: const BoxConstraints(maxWidth: 500),
+                  child: Card(
+                    elevation: 30,
+                    child: Column(
+                      children: [buildForm(context)],
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "Made by 2.5 Perveivers",
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -43,11 +59,10 @@ class LoginPage extends StatelessWidget {
             children: [
               TextFormField(
                 controller: _ipTextController,
-                keyboardType: const TextInputType.numberWithOptions(
-                    signed: true, decimal: true),
+                keyboardType: TextInputType.url,
                 decoration: const InputDecoration(
-                  labelText: "Ip adress",
-                  hintText: "Your server ip adress",
+                  labelText: "Url adress",
+                  hintText: "Your server url/ip adress",
                 ),
                 validator: (currentValue) {
                   if (currentValue == null || currentValue.isEmpty) {
@@ -82,20 +97,19 @@ class LoginPage extends StatelessWidget {
                 children: [
                   Expanded(
                     child: ElevatedButton(
+                      //TODO(rares45): replace with Filled Button when it comes out
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(
+                            Theme.of(context).colorScheme.primary),
+                        foregroundColor: MaterialStateProperty.all(
+                            Theme.of(context).colorScheme.onPrimary),
+                      ),
                       onPressed: () {
                         _login(context);
                       },
-                      child: const Text("Login"),
-                      style: ButtonStyle(
-                        fixedSize: MaterialStateProperty.all(
-                          const Size(
-                            double.nan,
-                            55,
-                          ),
-                        ),
-                        backgroundColor: MaterialStateColor.resolveWith(
-                          (states) => Theme.of(context).colorScheme.primary,
-                        ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: Text("Login"),
                       ),
                     ),
                   ),
