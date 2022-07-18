@@ -13,7 +13,7 @@ class DataProvider {
 
   late Socket socket;
 
-  Future<void> init(String ip, String nickname) async {
+  Future<bool> init(String ip, String nickname) async {
     this.ip = ip;
     username = nickname;
     try {
@@ -24,10 +24,12 @@ class DataProvider {
           content: Text("Something went wrong"),
         ),
       );
+      return false;
     }
     socket.setOption(SocketOption.tcpNoDelay, true);
     socket.encoding = utf8;
     send(DataPackage.newLoginPackage(username));
+    return true;
   }
 
   void send(DataPackage dataPackage) {

@@ -122,15 +122,18 @@ class LoginPage extends StatelessWidget {
 
   void _login(BuildContext context) async {
     if (_loginFormKey.currentState!.validate()) {
-      await DataProvider.of(context).init(
+      bool init = await DataProvider.of(context).init(
         _ipTextController.text,
         _nicknameTextController.text,
       );
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const HomePage(),
-        ),
-      );
+
+      if (init) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const HomePage(),
+          ),
+        );
+      }
     }
   }
 }
