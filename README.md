@@ -1,22 +1,7 @@
-# betalk
-A very simple yet very shitty chat app
+# BeTalk
+A very simple real-time chat app using sockets written in a lot of languages  
 
-front end -> flutter (dart)
+Clients: Flutter, Python\
+Servers: Kotlin, Python
 
-back end -> python 3, kotlin
-
-This is made for learning, so no hate
-
-Also this README will be updated later
-
-target platforms:
-
-* linux - done
-* windows - done
-* android - done
-* ios - done
-* web (not working on right now)
-
-In the near future we will add betalk to snap, aur and maybe to flatpak
-
-That's all.
+Working on servers in C and Rust
