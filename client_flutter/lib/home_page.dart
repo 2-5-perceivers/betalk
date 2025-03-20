@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -90,16 +90,17 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             CircleAvatar(
+              backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
               child: Icon(
                 Icons.person_outline,
                 color: Theme.of(context).colorScheme.onSecondaryContainer,
               ),
-              backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
             ),
             const SizedBox(
               width: 16,
             ),
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text("Betalk"),
                 Text(
@@ -107,7 +108,6 @@ class _HomePageState extends State<HomePage> {
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
               ],
-              crossAxisAlignment: CrossAxisAlignment.start,
             ),
           ],
         ),
@@ -156,11 +156,11 @@ class _HomePageState extends State<HomePage> {
                         FloatingActionButton(
                           onPressed: _send,
                           mini: true,
+                          elevation: 0,
+                          hoverElevation: 5,
                           child: const Icon(
                             Icons.send,
                           ),
-                          elevation: 0,
-                          hoverElevation: 5,
                         ),
                       ],
                     ),

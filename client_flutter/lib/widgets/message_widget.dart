@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class MessageWidget extends StatelessWidget {
-  const MessageWidget({Key? key, required this.message}) : super(key: key);
+  const MessageWidget({super.key, required this.message});
 
   final Message message;
 
@@ -16,11 +16,11 @@ class MessageWidget extends StatelessWidget {
     systemMessage = message.type == MessageType.systemMessage;
     myMessage = message.messageAuthor == DataProvider.of(context).username;
 
-    AlignmentGeometry _alignmentGeometry = systemMessage
+    AlignmentGeometry alignmentGeometry = systemMessage
         ? Alignment.center
         : (myMessage ? Alignment.centerRight : Alignment.centerLeft);
-    double _messageLayoutPadding = systemMessage ? 6 : 2;
-    double _messageRadius = 15;
+    double messageLayoutPadding = systemMessage ? 6 : 2;
+    double messageRadius = 15;
 
     ThemeData th = Theme.of(context);
     ColorScheme cs = th.colorScheme;
@@ -31,7 +31,7 @@ class MessageWidget extends StatelessWidget {
         vertical: 5,
         horizontal: 16,
       ),
-      alignment: _alignmentGeometry,
+      alignment: alignmentGeometry,
       child: Container(
         constraints: BoxConstraints(
           maxWidth: MediaQuery.of(context).size.width > 700
@@ -40,7 +40,7 @@ class MessageWidget extends StatelessWidget {
           minWidth: 64,
         ),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(_messageRadius),
+          borderRadius: BorderRadius.circular(messageRadius),
           color: systemMessage
               ? cs.tertiaryContainer
               : ElevationOverlay.applySurfaceTint(
@@ -49,7 +49,7 @@ class MessageWidget extends StatelessWidget {
                   myMessage ? 16 : 2,
                 ),
         ),
-        padding: EdgeInsets.all(_messageLayoutPadding),
+        padding: EdgeInsets.all(messageLayoutPadding),
         child: systemMessage
             ? Tooltip(
                 message: _dateTimeToHuman(time),
@@ -77,7 +77,7 @@ class MessageWidget extends StatelessWidget {
                       if (message.messageFileContent != null)
                         Container(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(_messageRadius),
+                            borderRadius: BorderRadius.circular(messageRadius),
                           ),
                           child: Image.memory(
                             message.messageFileContent!,
@@ -90,12 +90,12 @@ class MessageWidget extends StatelessWidget {
                     ],
                   ),
                   Positioned(
+                    bottom: 0,
+                    right: 8,
                     child: Text(
                       DateFormat.Hm().format(time),
                       style: txth.labelSmall,
                     ),
-                    bottom: 0,
-                    right: 8,
                   ),
                 ],
               ),

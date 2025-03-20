@@ -8,7 +8,7 @@ void main() => runApp(const betalkApp());
 
 // ignore: camel_case_types
 class betalkApp extends StatelessWidget {
-  const betalkApp({Key? key}) : super(key: key);
+  const betalkApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class betalkApp extends StatelessWidget {
       create: (_) => DataProvider(),
       dispose: (_, DataProvider instance) => instance.dispose(),
       child: MaterialApp(
-        title: 'Betalk',
+        title: 'BeTalk',
         themeMode: ThemeMode.dark,
         theme: ThemeData(
           brightness: Brightness.light,

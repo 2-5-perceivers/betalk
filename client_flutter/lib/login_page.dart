@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'home_page.dart';
 
 class LoginPage extends StatelessWidget {
-  LoginPage({Key? key}) : super(key: key);
+  LoginPage({super.key});
 
   final _loginFormKey = GlobalKey<FormState>();
 
@@ -15,7 +15,7 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Betalk"),
+        title: const Text("BeTalk"),
         centerTitle: true,
       ),
       body: Column(
@@ -29,9 +29,9 @@ class LoginPage extends StatelessWidget {
                   child: Card(
                     elevation: 30,
                     child: Column(
-                      children: [buildForm(context)],
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [buildForm(context)],
                     ),
                   ),
                 ),
@@ -96,21 +96,11 @@ class LoginPage extends StatelessWidget {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Expanded(
-                    child: ElevatedButton(
-                      //TODO(rares45): replace with Filled Button when it comes out
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(
-                            Theme.of(context).colorScheme.primary),
-                        foregroundColor: MaterialStateProperty.all(
-                            Theme.of(context).colorScheme.onPrimary),
-                      ),
+                    child: FilledButton.tonal(
                       onPressed: () {
                         _login(context);
                       },
-                      child: const Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: Text("Login"),
-                      ),
+                      child: Text("Login"),
                     ),
                   ),
                 ],
@@ -127,7 +117,7 @@ class LoginPage extends StatelessWidget {
         _nicknameTextController.text,
       );
 
-      if (init) {
+      if (init && context.mounted) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => const HomePage(),
