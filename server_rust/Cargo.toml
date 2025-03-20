@@ -1,0 +1,9 @@
+[package]
+name = "betalk"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.4.7", features = ["derive"] }
+clap_derive = "4.5.32"
+log = "0.4.26"
