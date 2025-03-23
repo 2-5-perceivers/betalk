@@ -1,3 +1,0 @@
-# betalk
-
-"Useful" chatting app
