@@ -36,9 +36,9 @@ class DataPackage {
 }
 
 enum DataPackageType {
-  @JsonValue("login")
+  @JsonValue("LOGIN")
   login,
 
-  @JsonValue("message")
+  @JsonValue("MESSAGE")
   message,
 }

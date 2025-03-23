@@ -8,27 +8,24 @@ part 'message.g.dart';
 @JsonSerializable()
 class Message {
   const Message(
-    this.messageID, {
-    this.messageAuthor,
-    this.messageTextContent,
-    this.messageFileContent,
+    this.id, {
+    this.author,
+    this.textContent,
+    this.fileContent,
     required this.time,
     required this.type,
-  }) : assert(messageTextContent != null || messageFileContent != null);
+  }) : assert(textContent != null || fileContent != null);
 
-  Message.newMessage(
-      {required this.messageAuthor,
-      this.messageTextContent,
-      this.messageFileContent})
-      : messageID = const Uuid().v4(),
+  Message.newMessage({required this.author, this.textContent, this.fileContent})
+      : id = const Uuid().v4(),
         type = MessageType.userMessage,
         time = DateTime.now().toUtc().toIso8601String(),
-        assert(messageTextContent != null || messageFileContent != null);
+        assert(textContent != null || fileContent != null);
 
-  final String messageID;
-  final String? messageAuthor, messageTextContent;
+  final String id;
+  final String? author, textContent;
   @Uint8ListConverter()
-  final Uint8List? messageFileContent;
+  final Uint8List? fileContent;
   final String time;
   final MessageType type;
 
@@ -38,9 +35,9 @@ class Message {
 }
 
 enum MessageType {
-  @JsonValue("user-message")
+  @JsonValue("USER_MESSAGE")
   userMessage,
-  @JsonValue("system-message")
+  @JsonValue("SYSTEM_MESSAGE")
   systemMessage,
 }
 

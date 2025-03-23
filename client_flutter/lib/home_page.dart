@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void queuerProcessor() {
-    String eof = '\u001a';
+    String eof = '\n';
     String newPack;
     bool foundEOF = false;
     int lastIndex = 0;
@@ -102,7 +102,7 @@ class _HomePageState extends State<HomePage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("Betalk"),
+                const Text("BeTalk"),
                 Text(
                   username,
                   style: Theme.of(context).textTheme.titleSmall,
@@ -175,8 +175,9 @@ class _HomePageState extends State<HomePage> {
   /// Send message
   void _send() {
     Message m = Message.newMessage(
-        messageAuthor: DataProvider.of(context).username,
-        messageTextContent: _messageTextController.text);
+      author: DataProvider.of(context).username,
+      textContent: _messageTextController.text,
+    );
 
     DataProvider.of(context).send(
       DataPackage.newMessagePackage(m),

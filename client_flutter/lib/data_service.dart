@@ -19,11 +19,13 @@ class DataProvider {
     try {
       socket = await Socket.connect(ip, 9090);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Something went wrong"),
-        ),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Could not connect to server"),
+          ),
+        );
+      }
       return false;
     }
     socket.setOption(SocketOption.tcpNoDelay, true);
@@ -33,7 +35,7 @@ class DataProvider {
   }
 
   void send(DataPackage dataPackage) {
-    socket.write(jsonEncode(dataPackage));
+    socket.write('${jsonEncode(dataPackage)}\n');
   }
 
   void dispose() async {

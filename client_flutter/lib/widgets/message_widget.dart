@@ -14,7 +14,7 @@ class MessageWidget extends StatelessWidget {
     DateTime time = DateTime.parse(message.time).toLocal();
 
     systemMessage = message.type == MessageType.systemMessage;
-    myMessage = message.messageAuthor == DataProvider.of(context).username;
+    myMessage = message.author == DataProvider.of(context).username;
 
     AlignmentGeometry alignmentGeometry = systemMessage
         ? Alignment.center
@@ -53,7 +53,7 @@ class MessageWidget extends StatelessWidget {
         child: systemMessage
             ? Tooltip(
                 message: _dateTimeToHuman(time),
-                child: Text(message.messageTextContent!),
+                child: Text(message.textContent!),
               )
             : Stack(
                 children: [
@@ -64,23 +64,23 @@ class MessageWidget extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(left: 6, top: 6),
                           child: Text(
-                            message.messageAuthor!,
+                            message.author!,
                             style: txth.labelMedium,
                           ),
                         ),
-                      if (message.messageTextContent != null)
+                      if (message.textContent != null)
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 3, horizontal: 6),
-                          child: SelectableText(message.messageTextContent!),
+                          child: SelectableText(message.textContent!),
                         ),
-                      if (message.messageFileContent != null)
+                      if (message.fileContent != null)
                         Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(messageRadius),
                           ),
                           child: Image.memory(
-                            message.messageFileContent!,
+                            message.fileContent!,
                             fit: BoxFit.fitWidth,
                           ),
                         ),
