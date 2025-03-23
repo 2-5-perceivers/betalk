@@ -76,12 +76,12 @@ class Server(ip: String? = null) {
                     break
                 }
                 if (dp.type == DataPackage.DataPackageType.Message) {
-                    var details: String = dp.message!!.messageAuthor!!
-                    if (dp.message!!.messageTextContent != null) {
-                        details += " says: " + dp.message!!.messageTextContent
+                    var details: String = dp.message!!.author!!
+                    if (dp.message!!.textContent != null) {
+                        details += " says: " + dp.message!!.textContent
                     }
-                    if (dp.message!!.messageFileContent != null) {
-                        if (dp.message!!.messageTextContent != null) {
+                    if (dp.message!!.fileContent != null) {
+                        if (dp.message!!.textContent != null) {
                             details += " and"
                         }
                         details += " sent a file"
@@ -110,7 +110,7 @@ class Server(ip: String? = null) {
      * Sends a data package to a client using its OutputStream
      */
     private fun send(writer: OutputStream, dataPackage: DataPackage) {
-        writer.write("${dataPackage.toJson()} \u001a".encodeToByteArray())
+        writer.write("${dataPackage.toJson()} \n".encodeToByteArray())
     }
 
     /**

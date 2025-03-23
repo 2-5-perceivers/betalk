@@ -9,23 +9,23 @@ import java.util.*
 
 @Serializable
 class Message(
-    val messageID: String,
-    val messageAuthor: String?,
-    val messageTextContent: String?,
-    val messageFileContent: ByteArray?,
+    val id: String,
+    val author: String?,
+    val textContent: String?,
+    val fileContent: ByteArray?,
     val time: String,
     val type: MessageType,
 ) {
     init {
-        assert(messageTextContent != null || messageFileContent != null)
+        assert(textContent != null || fileContent != null)
     }
 
     @Serializable
     enum class MessageType {
-        @SerialName("user-message")
+        @SerialName("USER_MESSAGE")
         UserMessage,
 
-        @SerialName("system-message")
+        @SerialName("SYSTEM_MESSAGE")
         SystemMessage,
     }
 

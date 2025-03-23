@@ -44,10 +44,10 @@ class DataPackage(val id: String, val type: DataPackageType, val message: Messag
 
     @Serializable
     enum class DataPackageType {
-        @SerialName("login")
+        @SerialName("LOGIN")
         Login,
 
-        @SerialName("message")
+        @SerialName("MESSAGE")
         Message,
     }
 }
