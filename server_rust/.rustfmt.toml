@@ -1,0 +1,12 @@
+tab_spaces = 2
+binop_separator = "Back"
+blank_lines_upper_bound = 1
+format_strings = true
+imports_granularity = "Module"
+newline_style = "Unix"
+normalize_comments = true
+reorder_impl_items = true
+reorder_imports = true
+group_imports = "StdExternalCrate"
+unstable_features = true
+wrap_comments = true
