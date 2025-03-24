@@ -48,8 +48,6 @@ Communication occurs over TCP using UTF-8 encoded JSON strings, terminated by ne
 3. Client sends/receives MESSAGE data packets
 4. Server only sends MESSAGE data packets to clients
 
-## Server specifications
-
 ## Server Specifications
 
 ### Command Interface
